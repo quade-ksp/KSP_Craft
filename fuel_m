@@ -1,0 +1,45 @@
+Set Terminal: width to 30.
+Set Terminal: height to 20.
+
+Until AG4 {
+
+clearscreen.
+
+Set LFpercent to (SHIP:LIQUIDFUEL / (ship_resource("liquidfuel"):CAPACITY)).
+	//Set Opercent to (SHIP:OXIDIZER / (ship_resource("OXIDIZER"):CAPACITY)).
+Set Mpercent to (SHIP:MONOPROPELLANT / (ship_resource("MONOPROPELLANT"):CAPACITY)).
+
+PRINT "kOS Fuel Star Levels".
+PRINT " ".
+
+PRINT "Liquid Fuel  " + ROUND(SHIP:LIQUIDFUEL) +  "  " + ROUND(ship_resource("liquidfuel"):CAPACITY) + "  " + round(LFpercent*100) + "%".
+PRINT " ".
+
+	//PRINT "Oxidizer     " + ROUND(SHIP:OXIDIZER) + "  " + ROUND(ship_resource("OXIDIZER"):CAPACITY) + "  " + round(Opercent*100) + "%".
+	//PRINT " ".
+
+PRINT "Monoprop     " + ROUND(SHIP:MONOPROPELLANT) + "  " + ROUND(ship_resource("MONOPROPELLANT"):CAPACITY) + "  " + round(Mpercent*100) + "%".
+PRINT " ".
+
+PRINT "Electric     " + ROUND(SHIP: ELECTRICCHARGE).
+
+CORE:PART:GETMODULE("kosLightModule"):SETFIELD("light r", (1-Mpercent)/2).
+CORE:PART:GETMODULE("kosLightModule"):SETFIELD("light g", 0.0).
+CORE:PART:GETMODULE("kosLightModule"):SETFIELD("light b", Mpercent/2).
+
+CORE:PART:GETMODULE("ModuleLight"):DOACTION("Toggle Light", true).
+
+Wait 1.
+}
+
+
+FUNCTION ship_resource {
+    PARAMETER resName.
+    FOR res in SHIP:RESOURCES {
+        IF res:NAME = resName {
+            RETURN res.
+        }
+    }
+}
+
+
